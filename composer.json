@@ -1,0 +1,31 @@
+{
+    "name": "nickaguilarh/laravel-roles",
+    "description": "A package that manage roles, permissions for users that can belong to an organization.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nick Aguilar H",
+            "email": "nickaguilarh@gmail.com"
+        }
+    ],
+    "require": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "NickAguilarH\\Fortress\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NickAguilarH\\Fortress\\Test\\": "tests"
+        }
+    },
+     "extra": {
+        "laravel": {
+            "providers": [
+                "NickAguilarH\\Fortress\\FortressServiceProvider"
+            ]
+        }
+    }
+}
