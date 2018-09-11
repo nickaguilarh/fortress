@@ -19,7 +19,7 @@ trait FortressPermissionTrait
      */
     public function roles()
     {
-        return $this->belongsToMany(Config::get('fortress.role'), Config::get('fortress.permission_role_table'), Config::get('fortress.permission_foreign_key'), Config::get('fortress.role_foreign_key'));
+        return $this->belongsToMany(config('fortress.role'), config('fortress.permission_role_table'), config('fortress.permission_foreign_key'), config('fortress.role_foreign_key'));
     }
 
     /**
@@ -34,7 +34,7 @@ trait FortressPermissionTrait
         parent::boot();
 
         static::deleting(function($permission) {
-            if (!method_exists(Config::get('fortress.permission'), 'bootSoftDeletes')) {
+            if (!method_exists(config('fortress.permission'), 'bootSoftDeletes')) {
                 $permission->roles()->sync([]);
             }
 

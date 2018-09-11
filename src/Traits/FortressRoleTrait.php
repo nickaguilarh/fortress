@@ -20,7 +20,7 @@ trait FortressRoleTrait
         $rolePrimaryKey = $this->primaryKey;
         $cacheKey = 'fortress_permissions_for_role_' . $this->$rolePrimaryKey;
         if (Cache::getStore() instanceof TaggableStore) {
-            return Cache::tags(Config::get('fortress.permission_role_table'))->remember($cacheKey, Config::get('cache.ttl', 60), function () {
+            return Cache::tags(config('fortress.permission_role_table'))->remember($cacheKey, config('cache.ttl', 60), function () {
                 return $this->perms()->get();
             });
         } else return $this->perms()->get();
@@ -32,7 +32,7 @@ trait FortressRoleTrait
             return false;
         }
         if (Cache::getStore() instanceof TaggableStore) {
-            Cache::tags(Config::get('fortress.permission_role_table'))->flush();
+            Cache::tags(config('fortress.permission_role_table'))->flush();
         }
         return true;
     }
@@ -43,7 +43,7 @@ trait FortressRoleTrait
             return false;
         }
         if (Cache::getStore() instanceof TaggableStore) {
-            Cache::tags(Config::get('fortress.permission_role_table'))->flush();
+            Cache::tags(config('fortress.permission_role_table'))->flush();
         }
         return true;
     }
@@ -54,7 +54,7 @@ trait FortressRoleTrait
             return false;
         }
         if (Cache::getStore() instanceof TaggableStore) {
-            Cache::tags(Config::get('fortress.permission_role_table'))->flush();
+            Cache::tags(config('fortress.permission_role_table'))->flush();
         }
         return true;
     }
@@ -66,7 +66,7 @@ trait FortressRoleTrait
      */
     public function users()
     {
-        return $this->belongsToMany(Config::get('auth.providers.users.model'), Config::get('fortress.role_user_table'), Config::get('fortress.role_foreign_key'), Config::get('fortress.user_foreign_key'));
+        return $this->belongsToMany(config('auth.providers.users.model'), config('fortress.role_user_table'), config('fortress.role_foreign_key'), config('fortress.user_foreign_key'));
     }
 
     /**
@@ -77,7 +77,7 @@ trait FortressRoleTrait
      */
     public function perms()
     {
-        return $this->belongsToMany(Config::get('fortress.permission'), Config::get('fortress.permission_role_table'), Config::get('fortress.role_foreign_key'), Config::get('fortress.permission_foreign_key'));
+        return $this->belongsToMany(config('fortress.permission'), config('fortress.permission_role_table'), config('fortress.role_foreign_key'), config('fortress.permission_foreign_key'));
     }
 
     /**
@@ -92,7 +92,7 @@ trait FortressRoleTrait
         parent::boot();
 
         static::deleting(function ($role) {
-            if (!method_exists(Config::get('fortress.role'), 'bootSoftDeletes')) {
+            if (!method_exists(config('fortress.role'), 'bootSoftDeletes')) {
                 $role->users()->sync([]);
                 $role->perms()->sync([]);
             }
@@ -153,7 +153,7 @@ trait FortressRoleTrait
         }
 
         if (Cache::getStore() instanceof TaggableStore) {
-            Cache::tags(Config::get('fortress.permission_role_table'))->flush();
+            Cache::tags(config('fortress.permission_role_table'))->flush();
         }
     }
 

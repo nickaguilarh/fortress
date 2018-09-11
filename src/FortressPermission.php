@@ -32,7 +32,7 @@ class FortressPermission extends Model implements FortressPermissionInterface
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->table = Config::get('fortress.permissions_table');
+        $this->table = config('fortress.permissions_table');
     }
 
 }

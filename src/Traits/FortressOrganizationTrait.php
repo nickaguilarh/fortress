@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 
-trait FortressUserTrait
+trait FortressOrganizationTrait
 {
     /**
      * Big block of caching functionality.
