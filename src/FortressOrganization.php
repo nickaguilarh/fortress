@@ -35,4 +35,13 @@ class FortressOrganization extends Model implements FortressOrganizationInterfac
         $this->table = config('fortress.organizations_table');
     }
 
+    /**
+     * Many-to-Many relations with User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function users()
+    {
+        // TODO: Implement users() method.
+    }
 }

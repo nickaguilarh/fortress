@@ -17,4 +17,11 @@ interface FortressPermissionInterface
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function roles();
+
+    /**
+     * TODO: Implement get users as needed.
+     *
+     * @return mixed
+     */
+    // public function users();
 }

@@ -41,7 +41,8 @@ class CreateRolesTables extends Migration
             $table->string('name')->unique();
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
-            $table->morphs('roleable');
+            $table->integer($this->organizationForeignKey)->unsigned()->nullable();
+            $table->foreign($this->organizationForeignKey)->references('id')->on($this->organizationsTable)->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         // Create table for storing permissions
@@ -50,7 +51,8 @@ class CreateRolesTables extends Migration
             $table->string('name')->unique();
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
-            $table->morphs('permissionable');
+            $table->integer($this->organizationForeignKey)->unsigned()->nullable();
+            $table->foreign($this->organizationForeignKey)->references('id')->on($this->organizationsTable)->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         //Create table for storing permission_role

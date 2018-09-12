@@ -18,6 +18,12 @@ interface FortressRoleInterface
     public function users();
 
     /**
+     * Many-to-Many relations with the OrganizationUser mode.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function organizationUsers();
+
+    /**
      * Many-to-Many relations with the permission model.
      * Named "perms" for backwards compatibility. Also because "perms" is short and sweet.
      *
