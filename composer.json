@@ -1,5 +1,5 @@
 {
-    "name": "nickaguilarh/laravel-roles",
+    "name": "nickaguilarh/fortress",
     "description": "A package that manage roles, permissions for users that can belong to an organization.",
     "license": "MIT",
     "authors": [
