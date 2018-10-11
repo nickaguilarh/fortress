@@ -7,6 +7,13 @@ use Illuminate\Support\ServiceProvider;
 class FortressServiceProvider extends ServiceProvider
 {
     /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
+
+    /**
      * Bootstrap services.
      *
      * @return void
@@ -15,6 +22,8 @@ class FortressServiceProvider extends ServiceProvider
     {
         $this->publishConfig();
         $this->publishMigrations();
+        $this->registerCommands();
+
     }
 
     /**
@@ -24,7 +33,15 @@ class FortressServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+    }
+
+    public function registerCommands()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MigrationCommand::class,
+            ]);
+        }
     }
 
     public function publishMigrations(){
@@ -40,5 +57,18 @@ class FortressServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/fortress.php' => config_path('fortress.php'),
         ], 'config');
+    }
+
+
+    /**
+     * Get the services provided.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return [
+            'command.Fortress.migration'
+        ];
     }
 }

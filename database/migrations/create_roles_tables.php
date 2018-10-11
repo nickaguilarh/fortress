@@ -32,7 +32,6 @@ class CreateRolesTables extends Migration
         $this->organizationUserForeignKey = config('fortress.organization_user_foreign_key');
         $this->organizationUserPermissionTable = config('fortress.organization_user_permission_table');
 
-
         DB::beginTransaction();
 
         // Create table for storing roles
