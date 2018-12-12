@@ -41,19 +41,16 @@ class MigrationCommand extends Command
         $this->laravel->view->addNamespace('fortress', substr(__DIR__, 0, -8) . 'Views');
 
         $rolesTable = config('fortress.roles_table');
-        $roleUserTable = config('fortress.role_user_table');
         $permissionsTable = config('fortress.permissions_table');
-        $permissionUserTable = config('fortress.permission_user_table');
         $permissionRoleTable = config('fortress.permission_role_table');
-        $organizationsTable = config('fortress.organizations_table');
-        $organizationUserTable = config('fortress.organization_user_table');
-        $organizationUserRoleTable = config('fortress.organization_user_role_table');
-        $organizationUserPermissionTable = config('fortress.organization_user_permission_table');
+        $personaTable = config('fortress.persona_table');
+        $personaRoleTable = config('fortress.persona_role_table');
+        $personaPermissionTable = config('fortress.persona_permission_table');
 
         $this->line('');
-        $this->info("Tables: $rolesTable, $roleUserTable, $permissionsTable, $permissionRoleTable, $organizationUserRoleTable, $organizationUserPermissionTable, $organizationUserTable, $organizationsTable");
+        $this->info("Tables: $rolesTable, $permissionsTable, $permissionRoleTable, $personaTable, $personaRoleTable, $personaPermissionTable");
 
-        $message = "A migration that creates '$rolesTable', '$roleUserTable', '$permissionsTable', '$permissionRoleTable', '$permissionUserTable', '$organizationUserTable', '$organizationUserRoleTable', '$organizationUserPermissionTable', '$organizationsTable'" . " tables will be created in database/migrations directory";
+        $message = "A migration that creates '$rolesTable', '$permissionsTable', '$permissionRoleTable', '$personaTable', '$personaRoleTable', '$personaPermissionTable'" . " tables will be created in database/migrations directory";
 
         $this->comment($message);
         $this->line('');
@@ -87,24 +84,22 @@ class MigrationCommand extends Command
      */
     protected function createMigration()
     {
-
-        $userForeignKey = config('fortress.user_foreign_key');
+        // Tables
         $rolesTable = config('fortress.roles_table');
-        $roleUserTable = config('fortress.role_user_table');
-        $roleForeignKey = config('fortress.role_foreign_key');
         $permissionsTable = config('fortress.permissions_table');
-        $permissionUserTable = config('fortress.permission_user_table');
         $permissionRoleTable = config('fortress.permission_role_table');
+        $personaTable = config('fortress.persona_table');
+        $personaRoleTable = config('fortress.persona_role_table');
+        $personaPermissionTable = config('fortress.persona_permission_table');
+
+        // Keys
+        $userForeignKey = config('fortress.user_foreign_key');
+        $roleForeignKey = config('fortress.role_foreign_key');
         $permissionForeignKey = config('fortress.permission_foreign_key');
-        $organizationsTable = config('fortress.organizations_table');
-        $organizationUserTable = config('fortress.organization_user_table');
-        $organizationForeignKey = config('fortress.organization_foreign_key');
-        $organizationUserRoleTable = config('fortress.organization_user_role_table');
-        $organizationUserForeignKey = config('fortress.organization_user_foreign_key');
-        $organizationUserPermissionTable = config('fortress.organization_user_permission_table');
+        $personaForeignKey = config('fortress.persona_foreign_key');
+
 
         $migrationFile = base_path("/database/migrations") . "/" . date('Y_m_d_His') . "_create_fortress_setup_tables.php";
-
 
 
         $userModelName = Config::get('auth.providers.users.model');
@@ -112,9 +107,7 @@ class MigrationCommand extends Command
         $usersTable = $userModel->getTable();
         $userKeyName = $userModel->getKeyName();
 
-        $data = compact('rolesTable', 'roleUserTable', 'permissionsTable', 'permissionRoleTable', 'usersTable', 'userKeyName', 'roleForeignKey', 'permissionUserTable', 'permissionForeignKey', 'organizationsTable', 'organizationUserTable', 'permissionForeignKey', 'organizationForeignKey', 'organizationUserRoleTable', 'organizationUserForeignKey', 'organizationUserPermissionTable', 'userForeignKey');
-
-//        dd($this->laravel->view->make('fortress::generators.migration'));
+        $data = compact('rolesTable', 'permissionsTable', 'permissionRoleTable', 'usersTable', 'userKeyName', 'roleForeignKey', 'permissionForeignKey', 'personaTable', 'personaRoleTable', 'personaForeignKey', 'personaPermissionTable', 'userForeignKey');
 
         $output = $this->laravel->view->make('fortress::generators.migration')->with($data)->render();
 
