@@ -109,7 +109,7 @@ class MigrationCommand extends Command
 
         $data = compact('rolesTable', 'permissionsTable', 'permissionRoleTable', 'usersTable', 'userKeyName', 'roleForeignKey', 'permissionForeignKey', 'personaTable', 'personaRoleTable', 'personaForeignKey', 'personaPermissionTable', 'userForeignKey');
 
-        $output = $this->laravel->view->make('fortress::generators.migration')->with($data)->render();
+        $output = $this->laravel->view->make('fortress::Generators.migration')->with($data)->render();
 
         if (!file_exists($migrationFile) && $fs = fopen($migrationFile, 'x')) {
             fwrite($fs, $output);
