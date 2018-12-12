@@ -19,9 +19,9 @@ interface FortressPermissionInterface
     public function roles();
 
     /**
-     * TODO: Implement get users as needed.
+     * Many-to-Many relations with the persona model.
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    // public function users();
+    public function personae();
 }

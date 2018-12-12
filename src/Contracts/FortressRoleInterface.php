@@ -11,17 +11,11 @@
 interface FortressRoleInterface
 {
     /**
-     * Many-to-Many relations with the user model.
+     * Many-to-Many relations with the persona model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function users();
-
-    /**
-     * Many-to-Many relations with the OrganizationUser mode.
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function organizationUsers();
+    public function personae();
 
     /**
      * Many-to-Many relations with the permission model.

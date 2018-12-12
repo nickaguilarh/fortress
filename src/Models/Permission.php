@@ -8,14 +8,14 @@
  * @package NickAguilarH\Fortress
  */
 
-use NickAguilarH\Fortress\Contracts\FortressRoleInterface;
-use NickAguilarH\Fortress\Traits\FortressRoleTrait;
+use NickAguilarH\Fortress\Contracts\FortressPermissionInterface;
+use NickAguilarH\Fortress\Traits\FortressPermissionTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
-class FortressRole extends Model implements FortressRoleInterface
+class Permission extends Model implements FortressPermissionInterface
 {
-    use FortressRoleTrait;
+    use FortressPermissionTrait;
 
     /**
      * The database table used by the model.
@@ -32,7 +32,7 @@ class FortressRole extends Model implements FortressRoleInterface
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->table = config('fortress.roles_table');
+        $this->table = config('fortress.permissions_table');
     }
 
 }

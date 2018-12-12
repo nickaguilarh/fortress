@@ -8,7 +8,6 @@
  * @package NickAguilarH\Fortress
  */
 
-use Illuminate\Support\Facades\Config;
 
 trait FortressPermissionTrait
 {
@@ -20,6 +19,16 @@ trait FortressPermissionTrait
     public function roles()
     {
         return $this->belongsToMany(config('fortress.role'), config('fortress.permission_role_table'), config('fortress.permission_foreign_key'), config('fortress.role_foreign_key'));
+    }
+
+    /**
+     * Many-to-Many relations with the personae model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function personae()
+    {
+        return $this->belongsToMany(config('fortress.persona'), config('fortress.persona_permission_table'), config('fortress.permission_foreign_key'), config('fortress.persona_foreign_key'));
     }
 
     /**

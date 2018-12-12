@@ -130,6 +130,18 @@ return [
     */
     'persona_table' => 'persona',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Fortress Persona Model
+    |--------------------------------------------------------------------------
+    |
+    | This is the permissions table used by Fortress to save permissions to the
+    | database.
+    |
+    */
+    'persona' => \NickAguilarH\Fortress\Models\Persona::class,
+
+
 
     /*
     |--------------------------------------------------------------------------
