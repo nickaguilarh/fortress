@@ -52,6 +52,16 @@ trait FortressPersonaTrait
     }
 
     /**
+     * BelongsTo relations with Role.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(config('fortress.user'));
+    }
+
+    /**
      * Many-to-Many relations with role model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -115,11 +125,11 @@ trait FortressPersonaTrait
      *
      * @return bool
      */
-    public function can($permission, $requireAll = false)
+    public function hasPerm($permission, $requireAll = false)
     {
         if (is_array($permission)) {
             foreach ($permission as $permName) {
-                $hasPerm = $this->can($permName);
+                $hasPerm = $this->hasPerm($permName);
 
                 if ($hasPerm && !$requireAll) {
                     return true;
@@ -150,11 +160,11 @@ trait FortressPersonaTrait
      */
     public function attachRole($role)
     {
-        if(is_object($role)) {
+        if (is_object($role)) {
             $role = $role->getKey();
         }
 
-        if(is_array($role)) {
+        if (is_array($role)) {
             $role = $role['id'];
         }
 
@@ -212,11 +222,11 @@ trait FortressPersonaTrait
      */
     public function attachPermission($perm)
     {
-        if(is_object($perm)) {
+        if (is_object($perm)) {
             $perm = $perm->getKey();
         }
 
-        if(is_array($perm)) {
+        if (is_array($perm)) {
             $perm = $perm['id'];
         }
 
@@ -271,13 +281,12 @@ trait FortressPersonaTrait
     /**
      *Filtering personae according to their role
      *
-     *@param string $role
-     *@return personae collection
+     * @param string $role
+     * @return personae collection
      */
     public function scopeWithRole($query, $role)
     {
-        return $query->whereHas('roles', function ($query) use ($role)
-        {
+        return $query->whereHas('roles', function ($query) use ($role) {
             $query->where('name', $role);
         });
     }
@@ -286,13 +295,12 @@ trait FortressPersonaTrait
     /**
      *Filtering personae according to their perm
      *
-     *@param string $perm
-     *@return personae collection
+     * @param string $perm
+     * @return personae collection
      */
     public function scopeWithPerm($query, $perm)
     {
-        return $query->whereHas('perms', function ($query) use ($perm)
-        {
+        return $query->whereHas('perms', function ($query) use ($perm) {
             $query->where('name', $perm);
         });
     }

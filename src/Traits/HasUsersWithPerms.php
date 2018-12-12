@@ -11,8 +11,10 @@ trait HasUsersWithPerms
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany;
      */
-    public function persona()
+    public function personae()
     {
+        /** @var \Illuminate\Database\Eloquent\Model $this */
         return $this->morphMany(config('fortress.persona'), 'personable');
     }
+
 }

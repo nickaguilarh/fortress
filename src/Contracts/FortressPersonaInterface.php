@@ -49,7 +49,7 @@ interface FortressPersonaInterface
      *
      * @return bool
      */
-    public function can($permission, $requireAll = false);
+    public function hasPerm($permission, $requireAll = false);
 
     /**
      * Alias to eloquent many-to-many relation's attach() method.
