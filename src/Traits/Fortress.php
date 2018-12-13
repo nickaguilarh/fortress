@@ -175,6 +175,6 @@ trait Fortress
 
         return $this->personae()
             ->where(config('fortress.personable_column') . '_type', get_class($personable))
-            ->where(config('fortress.personable_column') . 'persona_id', $personable->id)->first();
+            ->where(config('fortress.personable_column') . '_id', $personable->id)->first();
     }
 }

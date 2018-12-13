@@ -1,6 +1,8 @@
 <?php namespace NickAguilarH\Fortress\Traits;
 
 use Illuminate\Support\Facades\Cache;
+use NickAguilarH\Fortress\Models\Role;
+use NickAguilarH\Fortress\Permission;
 
 /**
  * This file is part of Fortress,
@@ -170,6 +172,11 @@ trait FortressPersonaTrait
             $role = $role['id'];
         }
 
+        if (is_string($role)) {
+            $role = Role::where('name', '=', $role)->first();
+            $role = $role->id;
+        }
+
         $this->roles()->attach($role);
     }
 
@@ -186,6 +193,11 @@ trait FortressPersonaTrait
 
         if (is_array($role)) {
             $role = $role['id'];
+        }
+
+        if (is_string($role)) {
+            $role = Role::where('name', '=', $role)->first();
+            $role = $role->id;
         }
 
         $this->roles()->detach($role);
@@ -232,7 +244,12 @@ trait FortressPersonaTrait
             $perm = $perm['id'];
         }
 
-        $this->roles()->attach($perm);
+        if (is_string($perm)) {
+            $perm = Permission::where('name', '=', $perm)->first();
+            $perm = $perm->id;
+        }
+
+        $this->perms()->attach($perm);
     }
 
     /**
@@ -250,7 +267,12 @@ trait FortressPersonaTrait
             $perm = $perm['id'];
         }
 
-        $this->roles()->detach($perm);
+        if (is_string($perm)) {
+            $perm = Permission::where('name', '=', $perm)->first();
+            $perm = $perm->id;
+        }
+
+        $this->perms()->detach($perm);
     }
 
     /**
