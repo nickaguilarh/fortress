@@ -39,6 +39,7 @@ class FortressServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 MigrationCommand::class,
+                GenerateCommand::class,
             ]);
         }
     }
