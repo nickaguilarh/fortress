@@ -99,6 +99,8 @@ class MigrationCommand extends Command
         $personaForeignKey = config('fortress.persona_foreign_key');
 
 
+        $personableColumn = config('fortress.personable_column');
+
         $migrationFile = base_path("/database/migrations") . "/" . date('Y_m_d_His') . "_create_fortress_setup_tables.php";
 
 
@@ -107,7 +109,7 @@ class MigrationCommand extends Command
         $usersTable = $userModel->getTable();
         $userKeyName = $userModel->getKeyName();
 
-        $data = compact('rolesTable', 'permissionsTable', 'permissionRoleTable', 'usersTable', 'userKeyName', 'roleForeignKey', 'permissionForeignKey', 'personaTable', 'personaRoleTable', 'personaForeignKey', 'personaPermissionTable', 'userForeignKey');
+        $data = compact('rolesTable', 'permissionsTable', 'permissionRoleTable', 'usersTable', 'userKeyName', 'roleForeignKey', 'permissionForeignKey', 'personaTable', 'personaRoleTable', 'personaForeignKey', 'personaPermissionTable', 'userForeignKey','personableColumn');
 
         $output = $this->laravel->view->make('fortress::Generators.migration')->with($data)->render();
 

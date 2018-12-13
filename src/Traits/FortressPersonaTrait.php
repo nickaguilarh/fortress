@@ -1,5 +1,7 @@
 <?php namespace NickAguilarH\Fortress\Traits;
 
+use Illuminate\Support\Facades\Cache;
+
 /**
  * This file is part of Fortress,
  * a role & permission management solution for Laravel.

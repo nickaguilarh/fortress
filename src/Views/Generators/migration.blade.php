@@ -48,7 +48,7 @@ class CreateFortressSetupTables extends Migration
                 $table->increments('id');
                 $table->integer('{{$userForeignKey}}')->unsigned();
                 $table->foreign('{{$userForeignKey}}')->references('id')->on('{{$usersTable}}')->onUpdate('cascade')->onDelete('cascade');
-                $table->morphs('{{$personaTable.'able'}}');
+                $table->morphs('{{$personableColumn}}');
                 $table->timestamps();
             });
         };

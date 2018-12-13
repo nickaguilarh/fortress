@@ -142,6 +142,17 @@ return [
     'persona' => \NickAguilarH\Fortress\Models\Persona::class,
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Fortress Polymorphic Model
+    |--------------------------------------------------------------------------
+    |
+    | This is the polymorphic table used by Fortress to save permissions to the
+    | database.
+    |
+    */
+    'personable_column' => 'personable',
+
 
     /*
     |--------------------------------------------------------------------------
