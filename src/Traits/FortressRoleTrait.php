@@ -77,7 +77,7 @@ trait FortressRoleTrait
      */
     public function perms()
     {
-        return $this->belongsToMany(config('fortress.permission'), config('fortress.permission_role_table'), config('fortress.role_foreign_key'), config('fortress.permission_foreign_key'));
+        return $this->belongsToMany(config('fortress.permission'), config('fortress.permission_role_table'), config('fortress.permission_foreign_key'), config('fortress.persona_foreign_key'));
     }
 
     /**

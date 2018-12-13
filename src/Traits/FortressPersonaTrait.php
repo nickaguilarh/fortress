@@ -72,7 +72,7 @@ trait FortressPersonaTrait
      */
     public function roles()
     {
-        return $this->belongsToMany(config('fortress.role'), config('fortress.persona_role_table'), config('fortress.role_foreign_key'), config('fortress.persona_foreign_key'));
+        return $this->belongsToMany(config('fortress.role'), config('fortress.persona_role_table'), config('fortress.persona_foreign_key'), config('fortress.role_foreign_key'));
     }
 
     /**
@@ -82,7 +82,7 @@ trait FortressPersonaTrait
      */
     public function perms()
     {
-        return $this->belongsToMany(config('fortress.permission'), config('fortress.persona_permission_table'), config('fortress.permission_foreign_key'), config('fortress.persona_foreign_key'));
+        return $this->belongsToMany(config('fortress.permission'), config('fortress.persona_permission_table'), config('fortress.persona_foreign_key'), config('fortress.permission_foreign_key'));
     }
 
     /**
@@ -110,6 +110,12 @@ trait FortressPersonaTrait
             // If we've made it this far and $requireAll is TRUE, then ALL of the roles were found.
             // Return the value of $requireAll;
             return $requireAll;
+        } else if (is_object($name)) {
+            foreach ($this->cachedRoles() as $role) {
+                if ($role->name == $name->name) {
+                    return true;
+                }
+            }
         } else {
             foreach ($this->cachedRoles() as $role) {
                 if ($role->name == $name) {
@@ -146,6 +152,12 @@ trait FortressPersonaTrait
             // If we've made it this far and $requireAll is TRUE, then ALL of the perms were found.
             // Return the value of $requireAll;
             return $requireAll;
+        } else if (is_object($permission)) {
+            foreach ($this->cachedRoles() as $role) {
+                if ($role->name == $permission->name) {
+                    return true;
+                }
+            }
         } else {
             foreach ($this->cachedPerms() as $perm) {
                 if (str_is($permission, $perm->name)) {
@@ -161,6 +173,7 @@ trait FortressPersonaTrait
      * Alias to eloquent many-to-many relation's attach() method.
      *
      * @param mixed $role
+     * @return bool
      */
     public function attachRole($role)
     {
@@ -177,13 +190,19 @@ trait FortressPersonaTrait
             $role = $role->id;
         }
 
-        $this->roles()->attach($role);
+        try {
+            $this->roles()->sync($role, false);
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
     /**
      * Alias to eloquent many-to-many relation's detach() method.
      *
      * @param mixed $role
+     * @return bool
      */
     public function detachRole($role)
     {
@@ -200,39 +219,49 @@ trait FortressPersonaTrait
             $role = $role->id;
         }
 
-        $this->roles()->detach($role);
+        try {
+            $this->roles()->detach($role);
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
     /**
      * Attach multiple roles to a user
      *
      * @param mixed $roles
+     * @return bool
      */
     public function attachRoles($roles)
     {
         foreach ($roles as $role) {
-            $this->attachRole($role);
+            if (!$this->attachRole($role)) return false;
         }
+        return true;
     }
 
     /**
      * Detach multiple roles from a user
      *
      * @param mixed $roles
+     * @return bool
      */
     public function detachRoles($roles)
     {
         if (!$roles) $roles = $this->roles()->get();
 
         foreach ($roles as $role) {
-            $this->detachRole($role);
+            if (!$this->detachRole($role)) return false;
         }
+        return true;
     }
 
     /**
      * Alias to eloquent many-to-many relation's attach() method.
      *
      * @param mixed $perm
+     * @return bool
      */
     public function attachPermission($perm)
     {
@@ -249,13 +278,19 @@ trait FortressPersonaTrait
             $perm = $perm->id;
         }
 
-        $this->perms()->attach($perm);
+        try {
+            $this->perms()->sync($perm, false);
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
     /**
      * Alias to eloquent many-to-many relation's detach() method.
      *
      * @param mixed $perm
+     * @return bool
      */
     public function detachPermission($perm)
     {
@@ -272,33 +307,42 @@ trait FortressPersonaTrait
             $perm = $perm->id;
         }
 
-        $this->perms()->detach($perm);
+        try {
+            $this->perms()->detach($perm);
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 
     /**
      * Attach multiple roles to a user
      *
      * @param mixed $perms
+     * @return bool
      */
     public function attachPermissions($perms)
     {
         foreach ($perms as $perm) {
-            $this->attachRole($perm);
+            if (!$this->attachPermission($perm)) return false;
         }
+        return true;
     }
 
     /**
      * Detach multiple roles from a user
      *
      * @param mixed $perms
+     * @return bool
      */
     public function detachPermissions($perms)
     {
         if (!$perms) $perms = $this->roles()->get();
 
         foreach ($perms as $perm) {
-            $this->detachRole($perm);
+            if (!$this->detachPermission($perm)) return false;
         }
+        return true;
     }
 
 
