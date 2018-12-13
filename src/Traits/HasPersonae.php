@@ -4,7 +4,7 @@
 namespace NickAguilarH\Fortress\Traits;
 
 
-trait HasUsersWithPerms
+trait HasPersonae
 {
     /**
      * Get the persona associated with this model.
@@ -14,7 +14,6 @@ trait HasUsersWithPerms
     public function personae()
     {
         /** @var \Illuminate\Database\Eloquent\Model $this */
-        return $this->morphMany(config('fortress.persona'), 'personable');
+        return $this->morphMany(config('fortress.persona'), config('fortress.persona_table'));
     }
-
 }

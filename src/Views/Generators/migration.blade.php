@@ -40,6 +40,7 @@ class CreateFortressSetupTables extends Migration
             $table->foreign('{{$permissionForeignKey}}')->references('id')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('{{$roleForeignKey}}')->unsigned();
             $table->foreign('{{$roleForeignKey}}')->references('id')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
         });
         // Create table for storing the persona
         if (!Schema::hasTable('{{$personaTable}}')) {
@@ -47,7 +48,8 @@ class CreateFortressSetupTables extends Migration
                 $table->increments('id');
                 $table->integer('{{$userForeignKey}}')->unsigned();
                 $table->foreign('{{$userForeignKey}}')->references('id')->on('{{$usersTable}}')->onUpdate('cascade')->onDelete('cascade');
-                $table->morphs('{{$personaTable}}');
+                $table->morphs('{{$personaTable.'able'}}');
+                $table->timestamps();
             });
         };
         // Create table for storing persona_role
@@ -57,6 +59,7 @@ class CreateFortressSetupTables extends Migration
             $table->foreign('{{$personaForeignKey}}')->references('id')->on('{{$personaTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('{{$roleForeignKey}}')->unsigned();
             $table->foreign('{{$roleForeignKey}}')->references('id')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
         });
         // Create table for storing persona_permission
         Schema::create('{{$personaPermissionTable}}', function (Blueprint $table) {
@@ -65,6 +68,7 @@ class CreateFortressSetupTables extends Migration
             $table->foreign('{{$personaForeignKey}}')->references('id')->on('{{$personaTable}}');
             $table->integer('{{$permissionForeignKey}}')->unsigned();
             $table->foreign('{{$permissionForeignKey}}')->references('id')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
         });
         DB::commit();
     }
