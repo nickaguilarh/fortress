@@ -162,8 +162,26 @@ trait Fortress
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         if (!$personable) return $this->personae()->first();
 
-        return $this->personae()
+        $persona = $this->personae()
             ->where(config('fortress.personable_column') . '_type', get_class($personable))
             ->where(config('fortress.personable_column') . '_id', $personable->id)->first();
+
+        if (!$persona) {
+            $persona = self::createPersona($personable);
+        }
+
+        return $persona;
+    }
+
+    private function createPersona($personable)
+    {
+        if (!is_object($personable)) {
+            return false;
+        }
+        $persona = $this->personae()->newModelInstance();
+        $persona->user()->associate($this);
+        $persona->personable()->associate($personable);
+        $persona->save();
+        return $persona;
     }
 }
