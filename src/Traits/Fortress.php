@@ -4,7 +4,6 @@
 namespace NickAguilarH\Fortress\Traits;
 
 
-
 trait Fortress
 {
     public function personae()
@@ -22,7 +21,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->hasRole($role);
+        return !!$persona ? $persona->hasRole($role) : false;
     }
 
 
@@ -35,7 +34,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->hasPerm($perm);
+        return !!$persona ? $persona->hasPerm($perm) : false;
     }
 
     /**
@@ -49,7 +48,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->attachRole($role);
+        return !!$persona ? $persona->attachRole($role) : false;
     }
 
     /**
@@ -63,7 +62,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->detachRole($role);
+        return !!$persona ? $persona->detachRole($role) : false;
     }
 
     /**
@@ -77,7 +76,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->attachRoles($roles);
+        return !!$persona ? $persona->attachRoles($roles) : false;
     }
 
     /**
@@ -91,7 +90,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->detachRoles($roles);
+        return !!$persona ? $persona->detachRoles($roles) : false;
     }
 
 
@@ -106,7 +105,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->attachPermission($role);
+        return !!$persona ? $persona->attachPermission($role) : false;
     }
 
     /**
@@ -120,7 +119,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->detachPermission($role);
+        return !!$persona ? $persona->detachPermission($role) : false;
     }
 
 
@@ -135,7 +134,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->attachPermissions($roles);
+        return !!$persona ? $persona->attachPermissions($roles) : false;
     }
 
 
@@ -150,7 +149,7 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return $persona->detachPermissions($roles);
+        return !!$persona ? $persona->detachPermissions($roles) : false;
     }
 
 
