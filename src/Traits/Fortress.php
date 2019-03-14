@@ -13,6 +13,17 @@ trait Fortress
     }
 
     /**
+     * Get the roles in personable.
+     * @param null $personable
+     * @return mixed
+     */
+    public function getRoles($personable = null)
+    {
+        $persona = self::getPersona($personable);
+        return $persona->roles();
+    }
+
+    /**
      * @param $role
      * @param \NickAguilarH\Fortress\Models\Persona $personable
      * @return boolean
@@ -162,9 +173,12 @@ trait Fortress
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         if (!$personable) return $this->personae()->first();
 
+        $class = $personable->personae()->getMorphClass();
+        $id =  $personable->id;
+
         $persona = $this->personae()
-            ->where(config('fortress.personable_column') . '_type', get_class($personable))
-            ->where(config('fortress.personable_column') . '_id', $personable->id)->first();
+            ->where(config('fortress.personable_column') . '_type', $class )
+            ->where(config('fortress.personable_column') . '_id', $id)->first();
 
         if (!$persona) {
             $persona = self::createPersona($personable);
