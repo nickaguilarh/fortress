@@ -20,7 +20,7 @@ trait Fortress
     public function getRoles($personable = null)
     {
         $persona = self::getPersona($personable);
-        return $persona->roles();
+        return $persona->roles;
     }
 
     /**
