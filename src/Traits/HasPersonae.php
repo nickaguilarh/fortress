@@ -14,6 +14,6 @@ trait HasPersonae
     public function personae()
     {
         /** @var \Illuminate\Database\Eloquent\Model $this */
-        return $this->morphMany(config('fortress.persona'), config('fortress.persona_table'));
+        return $this->morphMany(config('fortress.persona'), config('fortress.personable_column'));
     }
 }
