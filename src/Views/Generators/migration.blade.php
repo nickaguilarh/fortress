@@ -1,4 +1,4 @@
-<?php echo '<?php' ?>
+<?php echo '<?php'  ?>
 
 
 use Illuminate\Database\Migrations\Migration;
@@ -33,15 +33,6 @@ class CreateFortressSetupTables extends Migration
             $table->string('description')->nullable();
             $table->timestamps();
         });
-        //Create table for storing permission_role
-        Schema::create('{{$permissionRoleTable}}', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('{{$permissionForeignKey}}')->unsigned();
-            $table->foreign('{{$permissionForeignKey}}')->references('id')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('{{$roleForeignKey}}')->unsigned();
-            $table->foreign('{{$roleForeignKey}}')->references('id')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
-            $table->timestamps();
-        });
         // Create table for storing the persona
         if (!Schema::hasTable('{{$personaTable}}')) {
             Schema::create('{{$personaTable}}', function (Blueprint $table) {
@@ -52,6 +43,17 @@ class CreateFortressSetupTables extends Migration
                 $table->timestamps();
             });
         };
+        //Create table for storing permission_role
+        Schema::create('{{$permissionRoleTable}}', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('{{$permissionForeignKey}}')->unsigned();
+            $table->foreign('{{$permissionForeignKey}}')->references('id')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->integer('{{$roleForeignKey}}')->unsigned();
+            $table->foreign('{{$roleForeignKey}}')->references('id')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->integer('{{$personaForeignKey}}')->unsigned();
+            $table->foreign('{{$personaForeignKey}}')->references('id')->on('{{$personaTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
+        });
         // Create table for storing persona_role
         Schema::create('{{$personaRoleTable}}', function (Blueprint $table) {
             $table->increments('id');
