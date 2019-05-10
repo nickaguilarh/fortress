@@ -14,35 +14,23 @@ use NickAguilarH\Fortress\Permission;
 trait FortressPersonaTrait
 {
     /**
-     * Big block of caching functionality.
+     * Boot the permission model
+     * Attach event listener to remove the many-to-many records when trying to delete
+     * Will NOT delete any records if the permission model uses soft deletes.
      *
-     * @return mixed Roles
+     * @return void|bool
      */
-    public function cachedRoles()
+    public static function boot()
     {
-        $personaPrimaryKey = $this->primaryKey;
-        $cacheKey = 'fortress_roles_for_persona_' . $this->$personaPrimaryKey;
-        if (Cache::getStore() instanceof TaggableStore) {
-            return Cache::tags(config('fortress.persona_role_table'))->remember($cacheKey, config('cache.ttl'), function () {
-                return $this->roles()->get();
-            });
-        } else return $this->roles()->get();
-    }
+        parent::boot();
 
-    /**
-     * Big block of caching functionality.
-     *
-     * @return mixed Permissions
-     */
-    public function cachedPerms()
-    {
-        $personaPrimaryKey = $this->primaryKey;
-        $cacheKey = 'fortress_permissions_for_persona_' . $this->$personaPrimaryKey;
-        if (Cache::getStore() instanceof TaggableStore) {
-            return Cache::tags(config('fortress.persona_permission_table'))->remember($cacheKey, config('cache.ttl'), function () {
-                return $this->perms()->get();
-            });
-        } else return $this->perms()->get();
+        static::deleting(function ($persona) {
+            if (!method_exists(config('fortress.persona'), 'bootSoftDeletes')) {
+                $persona->roles()->sync([]);
+                $persona->perms()->sync([]);
+            }
+            return true;
+        });
     }
 
     /**
@@ -66,30 +54,10 @@ trait FortressPersonaTrait
     }
 
     /**
-     * Many-to-Many relations with role model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function roles()
-    {
-        return $this->belongsToMany(config('fortress.role'), config('fortress.persona_role_table'), config('fortress.persona_foreign_key'), config('fortress.role_foreign_key'));
-    }
-
-    /**
-     * Many-to-Many relations with the personae model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function perms()
-    {
-        return $this->belongsToMany(config('fortress.permission'), config('fortress.persona_permission_table'), config('fortress.persona_foreign_key'), config('fortress.permission_foreign_key'));
-    }
-
-    /**
      * Checks if the user has a role by its name.
      *
      * @param string|array $name Role name or array of role names.
-     * @param bool $requireAll All roles in the array are required.
+     * @param bool $requireAll   All roles in the array are required.
      *
      * @return bool
      */
@@ -110,16 +78,18 @@ trait FortressPersonaTrait
             // If we've made it this far and $requireAll is TRUE, then ALL of the roles were found.
             // Return the value of $requireAll;
             return $requireAll;
-        } else if (is_object($name)) {
-            foreach ($this->cachedRoles() as $role) {
-                if ($role->name == $name->name) {
-                    return true;
-                }
-            }
         } else {
-            foreach ($this->cachedRoles() as $role) {
-                if ($role->name == $name) {
-                    return true;
+            if (is_object($name)) {
+                foreach ($this->cachedRoles() as $role) {
+                    if ($role->name == $name->name) {
+                        return true;
+                    }
+                }
+            } else {
+                foreach ($this->cachedRoles() as $role) {
+                    if ($role->name == $name) {
+                        return true;
+                    }
                 }
             }
         }
@@ -128,10 +98,40 @@ trait FortressPersonaTrait
     }
 
     /**
+     * Big block of caching functionality.
+     *
+     * @return mixed Roles
+     */
+    public function cachedRoles()
+    {
+        $personaPrimaryKey = $this->primaryKey;
+        $cacheKey = 'fortress_roles_for_persona_' . $this->$personaPrimaryKey;
+        if (Cache::getStore() instanceof TaggableStore) {
+            return Cache::tags(config('fortress.persona_role_table'))->remember($cacheKey, config('cache.ttl'),
+                function () {
+                    return $this->roles()->get();
+                });
+        } else {
+            return $this->roles()->get();
+        }
+    }
+
+    /**
+     * Many-to-Many relations with role model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(config('fortress.role'), config('fortress.persona_role_table'),
+            config('fortress.persona_foreign_key'), config('fortress.role_foreign_key'));
+    }
+
+    /**
      * Check if user has a permission by its name.
      *
      * @param string|array $permission Permission string or array of permissions.
-     * @param bool $requireAll All permissions in the array are required.
+     * @param bool $requireAll         All permissions in the array are required.
      *
      * @return bool
      */
@@ -152,16 +152,18 @@ trait FortressPersonaTrait
             // If we've made it this far and $requireAll is TRUE, then ALL of the perms were found.
             // Return the value of $requireAll;
             return $requireAll;
-        } else if (is_object($permission)) {
-            foreach ($this->cachedRoles() as $role) {
-                if ($role->name == $permission->name) {
-                    return true;
-                }
-            }
         } else {
-            foreach ($this->cachedPerms() as $perm) {
-                if (str_is($permission, $perm->name)) {
-                    return true;
+            if (is_object($permission)) {
+                foreach ($this->cachedRoles() as $role) {
+                    if ($role->name == $permission->name) {
+                        return true;
+                    }
+                }
+            } else {
+                foreach ($this->cachedPerms() as $perm) {
+                    if (str_is($permission, $perm->name)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -170,9 +172,57 @@ trait FortressPersonaTrait
     }
 
     /**
+     * Big block of caching functionality.
+     *
+     * @return mixed Permissions
+     */
+    public function cachedPerms()
+    {
+        $personaPrimaryKey = $this->primaryKey;
+        $cacheKey = 'fortress_permissions_for_persona_' . $this->$personaPrimaryKey;
+        if (Cache::getStore() instanceof TaggableStore) {
+            return Cache::tags(config('fortress.persona_permission_table'))->remember($cacheKey, config('cache.ttl'),
+                function () {
+                    return $this->perms()->get();
+                });
+        } else {
+            return $this->perms()->get();
+        }
+    }
+
+    /**
+     * Many-to-Many relations with the personae model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function perms()
+    {
+        return $this->belongsToMany(config('fortress.permission'), config('fortress.persona_permission_table'),
+            config('fortress.persona_foreign_key'), config('fortress.permission_foreign_key'));
+    }
+
+    /**
+     * Attach multiple roles to a user
+     *
+     * @param mixed $roles
+     *
+     * @return bool
+     */
+    public function attachRoles($roles)
+    {
+        foreach ($roles as $role) {
+            if (!$this->attachRole($role)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Alias to eloquent many-to-many relation's attach() method.
      *
      * @param mixed $role
+     *
      * @return bool
      */
     public function attachRole($role)
@@ -192,6 +242,7 @@ trait FortressPersonaTrait
 
         try {
             $this->roles()->sync($role, false);
+            $this->parsePermsOfRole(Role::find($role));
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -199,9 +250,31 @@ trait FortressPersonaTrait
     }
 
     /**
+     * Detach multiple roles from a user
+     *
+     * @param mixed $roles
+     *
+     * @return bool
+     */
+    public function detachRoles($roles)
+    {
+        if (!$roles) {
+            $roles = $this->roles()->get();
+        }
+
+        foreach ($roles as $role) {
+            if (!$this->detachRole($role)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Alias to eloquent many-to-many relation's detach() method.
      *
      * @param mixed $role
+     *
      * @return bool
      */
     public function detachRole($role)
@@ -221,6 +294,7 @@ trait FortressPersonaTrait
 
         try {
             $this->roles()->detach($role);
+            $this->parsePermsOfRole(Role::find($role), true);
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -230,29 +304,16 @@ trait FortressPersonaTrait
     /**
      * Attach multiple roles to a user
      *
-     * @param mixed $roles
-     * @return bool
-     */
-    public function attachRoles($roles)
-    {
-        foreach ($roles as $role) {
-            if (!$this->attachRole($role)) return false;
-        }
-        return true;
-    }
-
-    /**
-     * Detach multiple roles from a user
+     * @param mixed $perms
      *
-     * @param mixed $roles
      * @return bool
      */
-    public function detachRoles($roles)
+    public function attachPermissions($perms)
     {
-        if (!$roles) $roles = $this->roles()->get();
-
-        foreach ($roles as $role) {
-            if (!$this->detachRole($role)) return false;
+        foreach ($perms as $perm) {
+            if (!$this->attachPermission($perm)) {
+                return false;
+            }
         }
         return true;
     }
@@ -261,6 +322,7 @@ trait FortressPersonaTrait
      * Alias to eloquent many-to-many relation's attach() method.
      *
      * @param mixed $perm
+     *
      * @return bool
      */
     public function attachPermission($perm)
@@ -287,9 +349,31 @@ trait FortressPersonaTrait
     }
 
     /**
+     * Detach multiple roles from a user
+     *
+     * @param mixed $perms
+     *
+     * @return bool
+     */
+    public function detachPermissions($perms)
+    {
+        if (!$perms) {
+            $perms = $this->roles()->get();
+        }
+
+        foreach ($perms as $perm) {
+            if (!$this->detachPermission($perm)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Alias to eloquent many-to-many relation's detach() method.
      *
      * @param mixed $perm
+     *
      * @return bool
      */
     public function detachPermission($perm)
@@ -316,40 +400,10 @@ trait FortressPersonaTrait
     }
 
     /**
-     * Attach multiple roles to a user
-     *
-     * @param mixed $perms
-     * @return bool
-     */
-    public function attachPermissions($perms)
-    {
-        foreach ($perms as $perm) {
-            if (!$this->attachPermission($perm)) return false;
-        }
-        return true;
-    }
-
-    /**
-     * Detach multiple roles from a user
-     *
-     * @param mixed $perms
-     * @return bool
-     */
-    public function detachPermissions($perms)
-    {
-        if (!$perms) $perms = $this->roles()->get();
-
-        foreach ($perms as $perm) {
-            if (!$this->detachPermission($perm)) return false;
-        }
-        return true;
-    }
-
-
-    /**
      *Filtering personae according to their role
      *
      * @param string $role
+     *
      * @return personae collection
      */
     public function scopeWithRole($query, $role)
@@ -359,11 +413,11 @@ trait FortressPersonaTrait
         });
     }
 
-
     /**
      *Filtering personae according to their perm
      *
      * @param string $perm
+     *
      * @return personae collection
      */
     public function scopeWithPerm($query, $perm)
@@ -374,23 +428,20 @@ trait FortressPersonaTrait
     }
 
     /**
-     * Boot the permission model
-     * Attach event listener to remove the many-to-many records when trying to delete
-     * Will NOT delete any records if the permission model uses soft deletes.
+     * Assign default set of permissions of a specified role.
      *
-     * @return void|bool
+     * @param Role $role
+     * @param bool $remove
      */
-    public static function boot()
+    public final function parsePermsOfRole(Role $role, bool $remove = false): void
     {
-        parent::boot();
-
-        static::deleting(function ($persona) {
-            if (!method_exists(config('fortress.persona'), 'bootSoftDeletes')) {
-                $persona->roles()->sync([]);
-                $persona->perms()->sync([]);
+        $perms = $role->perms;
+        foreach ($perms as $perm) {
+            if ($remove) {
+                $this->detachPermission($perm);
+            } else {
+                $this->attachPermission($perm);
             }
-
-            return true;
-        });
+        }
     }
 }
