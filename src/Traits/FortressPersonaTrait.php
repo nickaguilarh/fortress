@@ -358,7 +358,7 @@ trait FortressPersonaTrait
     public function detachPermissions($perms)
     {
         if (!$perms) {
-            $perms = $this->roles()->get();
+            $perms = $this->perms()->get();
         }
 
         foreach ($perms as $perm) {
