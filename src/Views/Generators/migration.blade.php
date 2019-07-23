@@ -19,7 +19,7 @@ class CreateFortressSetupTables extends Migration
 
         // Create table for storing roles
         Schema::create('{{$rolesTable}}', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('uuid')->primary();
             $table->string('name')->unique();
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
@@ -27,7 +27,7 @@ class CreateFortressSetupTables extends Migration
         });
         // Create table for storing permissions
         Schema::create('{{$permissionsTable}}', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('uuid')->primary();
             $table->string('name')->unique();
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
@@ -36,27 +36,24 @@ class CreateFortressSetupTables extends Migration
         // Create table for storing the persona
         if (!Schema::hasTable('{{$personaTable}}')) {
             Schema::create('{{$personaTable}}', function (Blueprint $table) {
-                $table->increments('id');
-                $table->integer('{{$userForeignKey}}')->unsigned();
-                $table->foreign('{{$userForeignKey}}')->references('id')->on('{{$usersTable}}')->onUpdate('cascade')->onDelete('cascade');
-                $table->morphs('{{$personableColumn}}');
+                $table->uuid('uuid')->primary();
+                $table->{{$userForeignKeyType}}('{{$userForeignKey}}');
+                $table->foreign('{{$userForeignKey}}')->references('{{$userKeyName}}')->on('{{$usersTable}}')->onUpdate('cascade')->onDelete('cascade');
+                $table->string('{{$personableColumn . '_type'}}');
+                $table->{{$personableColumnForeignType}}('{{$personableColumnForeign}}');
                 $table->timestamps();
             });
         };
         //Create table for storing permission_role
         Schema::create('{{$permissionRoleTable}}', function (Blueprint $table) {
-            $table->increments('id');
             $table->integer('{{$permissionForeignKey}}')->unsigned();
             $table->foreign('{{$permissionForeignKey}}')->references('id')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('{{$roleForeignKey}}')->unsigned();
             $table->foreign('{{$roleForeignKey}}')->references('id')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('{{$personaForeignKey}}')->unsigned();
-            $table->foreign('{{$personaForeignKey}}')->references('id')->on('{{$personaTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         // Create table for storing persona_role
         Schema::create('{{$personaRoleTable}}', function (Blueprint $table) {
-            $table->increments('id');
             $table->integer('{{$personaForeignKey}}')->unsigned();
             $table->foreign('{{$personaForeignKey}}')->references('id')->on('{{$personaTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('{{$roleForeignKey}}')->unsigned();
@@ -65,7 +62,6 @@ class CreateFortressSetupTables extends Migration
         });
         // Create table for storing persona_permission
         Schema::create('{{$personaPermissionTable}}', function (Blueprint $table) {
-            $table->increments('id');
             $table->integer('{{$personaForeignKey}}')->unsigned();
             $table->foreign('{{$personaForeignKey}}')->references('id')->on('{{$personaTable}}');
             $table->integer('{{$permissionForeignKey}}')->unsigned();

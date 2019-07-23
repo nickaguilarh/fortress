@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Cache;
 use NickAguilarH\Fortress\Models\Role;
 use NickAguilarH\Fortress\Permission;
+use Ramsey\Uuid\Uuid;
 
 /**
  * This file is part of Fortress,
@@ -30,6 +31,10 @@ trait FortressPersonaTrait
                 $persona->perms()->sync([]);
             }
             return true;
+        });
+
+        static::creating(function ($model) {
+            $model->uuid = Uuid::uuid4()->toString();
         });
     }
 

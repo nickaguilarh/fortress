@@ -40,7 +40,7 @@ return [
     | relation between permissions and roles & roles and users
     |
     */
-    'role_foreign_key' => 'role_id',
+    'role_foreign_key' => 'role_uuid',
 
     /*
     |--------------------------------------------------------------------------
@@ -74,6 +74,8 @@ return [
     |
     */
     'user_foreign_key' => 'user_id',
+
+    'user_foreign_key_type' => 'unsignedInteger',
 
     /*
     |--------------------------------------------------------------------------
@@ -117,7 +119,7 @@ return [
     | relation between permissions and roles
     |
     */
-    'permission_foreign_key' => 'permission_id',
+    'permission_foreign_key' => 'permission_uuid',
 
     /*
     |--------------------------------------------------------------------------
@@ -153,6 +155,9 @@ return [
     */
     'personable_column' => 'personable',
 
+    'personable_foreign' => 'personable_id',
+
+    'personable_foreign_type' => 'unsignedInteger',
 
     /*
     |--------------------------------------------------------------------------
@@ -185,6 +190,6 @@ return [
     | relation between organization users and roles
     |
     */
-    'persona_foreign_key' => 'persona_id',
+    'persona_foreign_key' => 'persona_uuid',
 
 ];

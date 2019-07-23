@@ -1,5 +1,7 @@
 <?php namespace NickAguilarH\Fortress\Traits;
 
+use Ramsey\Uuid\Uuid;
+
 /**
  * This file is part of Fortress,
  * a role & permission management solution for Laravel.
@@ -48,6 +50,10 @@ trait FortressPermissionTrait
             }
 
             return true;
+        });
+
+        static::creating(function ($model) {
+            $model->uuid = Uuid::uuid4()->toString();
         });
     }
 }

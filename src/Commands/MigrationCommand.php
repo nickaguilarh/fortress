@@ -101,15 +101,18 @@ class MigrationCommand extends Command
 
         $personableColumn = config('fortress.personable_column');
 
-        $migrationFile = base_path("/database/migrations") . "/" . date('Y_m_d_His') . "_create_fortress_setup_tables.php";
+        $personableColumnForeignType = config('fortress.personable_foreign_type');
+        $personableColumnForeign = config('fortress.personable_foreign');
 
+        $migrationFile = base_path("/database/migrations") . "/" . date('Y_m_d_His') . "_create_fortress_setup_tables.php";
 
         $userModelName = Config::get('auth.providers.users.model');
         $userModel = new $userModelName();
         $usersTable = $userModel->getTable();
         $userKeyName = $userModel->getKeyName();
+        $userForeignKeyType = config('fortress.user_foreign_key_type');
 
-        $data = compact('rolesTable', 'permissionsTable', 'permissionRoleTable', 'usersTable', 'userKeyName', 'roleForeignKey', 'permissionForeignKey', 'personaTable', 'personaRoleTable', 'personaForeignKey', 'personaPermissionTable', 'userForeignKey','personableColumn');
+        $data = compact('rolesTable', 'permissionsTable', 'permissionRoleTable', 'usersTable', 'userKeyName', 'roleForeignKey', 'permissionForeignKey', 'personaTable', 'personaRoleTable', 'personaForeignKey', 'personaPermissionTable', 'userForeignKey','personableColumn','userForeignKeyType','personableColumnForeign','personableColumnForeignType');
 
         $output = $this->laravel->view->make('fortress::Generators.migration')->with($data)->render();
 

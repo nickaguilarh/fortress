@@ -11,6 +11,7 @@
 use Illuminate\Cache\TaggableStore;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cache;
+use Ramsey\Uuid\Uuid;
 
 trait FortressRoleTrait
 {
@@ -98,6 +99,10 @@ trait FortressRoleTrait
             }
 
             return true;
+        });
+
+        static::creating(function ($model) {
+            $model->uuid = Uuid::uuid4()->toString();
         });
     }
 
