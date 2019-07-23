@@ -234,13 +234,9 @@ trait FortressPersonaTrait
     {
         if (is_object($role)) {
             $role = $role->getKey();
-        }
-
-        if (is_array($role)) {
+        } else if (is_array($role)) {
             $role = $role['uuid'];
-        }
-
-        if (is_string($role)) {
+        } else if (is_string($role)) {
             $role = config('fortress.role')::where('name', '=', $role)->first();
             $role = $role->uuid;
         }
@@ -286,13 +282,9 @@ trait FortressPersonaTrait
     {
         if (is_object($role)) {
             $role = $role->getKey();
-        }
-
-        if (is_array($role)) {
+        } else if (is_array($role)) {
             $role = $role['uuid'];
-        }
-
-        if (is_string($role)) {
+        } else if (is_string($role)) {
             $role = config('fortress.role')::where('name', '=', $role)->first();
             $role = $role->uuid;
         }
@@ -334,13 +326,9 @@ trait FortressPersonaTrait
     {
         if (is_object($perm)) {
             $perm = $perm->getKey();
-        }
-
-        if (is_array($perm)) {
+        } else if (is_array($perm)) {
             $perm = $perm['uuid'];
-        }
-
-        if (is_string($perm)) {
+        } else if (is_string($perm)) {
             $perm = config('fortress.permission')::where('name', '=', $perm)->first();
             $perm = $perm->uuid;
         }
@@ -385,13 +373,9 @@ trait FortressPersonaTrait
     {
         if (is_object($perm)) {
             $perm = $perm->getKey();
-        }
-
-        if (is_array($perm)) {
+        } else if (is_array($perm)) {
             $perm = $perm['uuid'];
-        }
-
-        if (is_string($perm)) {
+        } else if (is_string($perm)) {
             $perm = config('fortress.permission')::where('name', '=', $perm)->first();
             $perm = $perm->uuid;
         }
