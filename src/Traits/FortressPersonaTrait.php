@@ -237,17 +237,17 @@ trait FortressPersonaTrait
         }
 
         if (is_array($role)) {
-            $role = $role['id'];
+            $role = $role['uuid'];
         }
 
         if (is_string($role)) {
-            $role = Role::where('name', '=', $role)->first();
+            $role = config('fortress.role')::where('name', '=', $role)->first();
             $role = $role->id;
         }
 
         try {
             $this->roles()->sync($role, false);
-            $this->parsePermsOfRole(Role::find($role));
+            $this->parsePermsOfRole(config('fortress.role')::find($role));
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -293,13 +293,13 @@ trait FortressPersonaTrait
         }
 
         if (is_string($role)) {
-            $role = Role::where('name', '=', $role)->first();
+            $role = config('fortress.role')::where('name', '=', $role)->first();
             $role = $role->id;
         }
 
         try {
             $this->roles()->detach($role);
-            $this->parsePermsOfRole(Role::find($role), true);
+            $this->parsePermsOfRole(config('fortress.role')::find($role), true);
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -341,7 +341,7 @@ trait FortressPersonaTrait
         }
 
         if (is_string($perm)) {
-            $perm = Permission::where('name', '=', $perm)->first();
+            $perm = config('fortress.permission')::where('name', '=', $perm)->first();
             $perm = $perm->id;
         }
 
@@ -392,7 +392,7 @@ trait FortressPersonaTrait
         }
 
         if (is_string($perm)) {
-            $perm = Permission::where('name', '=', $perm)->first();
+            $perm = config('fortress.permission')::where('name', '=', $perm)->first();
             $perm = $perm->id;
         }
 

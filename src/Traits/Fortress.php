@@ -177,8 +177,8 @@ trait Fortress
         $id =  $personable->id;
 
         $persona = $this->personae()
-            ->where(config('fortress.personable_column') . '_type', $class )
-            ->where(config('fortress.personable_column') . '_id', $id)->first();
+            ->where(config('fortress.personable_column'), $class )
+            ->where(config('fortress.personable_foreign'), $id)->first();
 
         if (!$persona) {
             $persona = self::createPersona($personable);

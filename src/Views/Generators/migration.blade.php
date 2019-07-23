@@ -39,7 +39,7 @@ class CreateFortressSetupTables extends Migration
                 $table->uuid('uuid')->primary();
                 $table->{{$userForeignKeyType}}('{{$userForeignKey}}');
                 $table->foreign('{{$userForeignKey}}')->references('{{$userKeyName}}')->on('{{$usersTable}}')->onUpdate('cascade')->onDelete('cascade');
-                $table->string('{{$personableColumn . '_type'}}');
+                $table->string('{{$personableColumn}}');
                 $table->{{$personableColumnForeignType}}('{{$personableColumnForeign}}');
                 $table->timestamps();
             });
