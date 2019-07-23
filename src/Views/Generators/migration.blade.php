@@ -46,26 +46,26 @@ class CreateFortressSetupTables extends Migration
         };
         //Create table for storing permission_role
         Schema::create('{{$permissionRoleTable}}', function (Blueprint $table) {
-            $table->integer('{{$permissionForeignKey}}')->unsigned();
-            $table->foreign('{{$permissionForeignKey}}')->references('id')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('{{$roleForeignKey}}')->unsigned();
-            $table->foreign('{{$roleForeignKey}}')->references('id')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->uuid('{{$permissionForeignKey}}')->index();
+            $table->foreign('{{$permissionForeignKey}}')->references('uuid')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->uuid('{{$roleForeignKey}}')->index();
+            $table->foreign('{{$roleForeignKey}}')->references('uuid')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         // Create table for storing persona_role
         Schema::create('{{$personaRoleTable}}', function (Blueprint $table) {
             $table->integer('{{$personaForeignKey}}')->unsigned();
-            $table->foreign('{{$personaForeignKey}}')->references('id')->on('{{$personaTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('{{$personaForeignKey}}')->references('uuid')->on('{{$personaTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('{{$roleForeignKey}}')->unsigned();
-            $table->foreign('{{$roleForeignKey}}')->references('id')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('{{$roleForeignKey}}')->references('uuid')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         // Create table for storing persona_permission
         Schema::create('{{$personaPermissionTable}}', function (Blueprint $table) {
             $table->integer('{{$personaForeignKey}}')->unsigned();
-            $table->foreign('{{$personaForeignKey}}')->references('id')->on('{{$personaTable}}');
+            $table->foreign('{{$personaForeignKey}}')->references('uuid')->on('{{$personaTable}}');
             $table->integer('{{$permissionForeignKey}}')->unsigned();
-            $table->foreign('{{$permissionForeignKey}}')->references('id')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('{{$permissionForeignKey}}')->references('uuid')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         DB::commit();
