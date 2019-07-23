@@ -45,7 +45,7 @@ trait FortressPersonaTrait
      */
     public function personable()
     {
-        return $this->morphTo();
+        return $this->morphTo(null, config('fortress.personable_column'), config('fortress.personable_foreign'));
     }
 
     /**

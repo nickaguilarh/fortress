@@ -174,7 +174,7 @@ trait Fortress
         if (!$personable) return $this->personae()->first();
 
         $class = $personable->personae()->getMorphClass();
-        $id =  $personable->id;
+        $id =  $personable->getKey();
 
         $persona = $this->personae()
             ->where(config('fortress.personable_column'), $class )
