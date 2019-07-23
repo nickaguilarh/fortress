@@ -17,6 +17,29 @@ class Persona extends Model implements FortressPersonaInterface
      */
     protected $table;
 
+
+    /**
+     * The primary key for the model no autoincrement.
+     *
+     * @var boolean
+     */
+    public $incrementing = false;
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'uuid';
+
+    /**
+     * The "type" of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+
     /**
      * Creates a new instance of the model.
      *
