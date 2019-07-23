@@ -54,17 +54,17 @@ class CreateFortressSetupTables extends Migration
         });
         // Create table for storing persona_role
         Schema::create('{{$personaRoleTable}}', function (Blueprint $table) {
-            $table->integer('{{$personaForeignKey}}')->unsigned();
+            $table->uuid('{{$personaForeignKey}}')->index();
             $table->foreign('{{$personaForeignKey}}')->references('uuid')->on('{{$personaTable}}')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('{{$roleForeignKey}}')->unsigned();
+            $table->uuid('{{$roleForeignKey}}')->index();
             $table->foreign('{{$roleForeignKey}}')->references('uuid')->on('{{$rolesTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         // Create table for storing persona_permission
         Schema::create('{{$personaPermissionTable}}', function (Blueprint $table) {
-            $table->integer('{{$personaForeignKey}}')->unsigned();
+            $table->uuid('{{$personaForeignKey}}')->index();
             $table->foreign('{{$personaForeignKey}}')->references('uuid')->on('{{$personaTable}}');
-            $table->integer('{{$permissionForeignKey}}')->unsigned();
+            $table->uuid('{{$permissionForeignKey}}')->index();
             $table->foreign('{{$permissionForeignKey}}')->references('uuid')->on('{{$permissionsTable}}')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
