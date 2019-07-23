@@ -242,7 +242,7 @@ trait FortressPersonaTrait
 
         if (is_string($role)) {
             $role = config('fortress.role')::where('name', '=', $role)->first();
-            $role = $role->id;
+            $role = $role->uuid;
         }
 
         try {
@@ -289,12 +289,12 @@ trait FortressPersonaTrait
         }
 
         if (is_array($role)) {
-            $role = $role['id'];
+            $role = $role['uuid'];
         }
 
         if (is_string($role)) {
             $role = config('fortress.role')::where('name', '=', $role)->first();
-            $role = $role->id;
+            $role = $role->uuid;
         }
 
         try {
@@ -337,12 +337,12 @@ trait FortressPersonaTrait
         }
 
         if (is_array($perm)) {
-            $perm = $perm['id'];
+            $perm = $perm['uuid'];
         }
 
         if (is_string($perm)) {
             $perm = config('fortress.permission')::where('name', '=', $perm)->first();
-            $perm = $perm->id;
+            $perm = $perm->uuid;
         }
 
         try {
@@ -388,12 +388,12 @@ trait FortressPersonaTrait
         }
 
         if (is_array($perm)) {
-            $perm = $perm['id'];
+            $perm = $perm['uuid'];
         }
 
         if (is_string($perm)) {
             $perm = config('fortress.permission')::where('name', '=', $perm)->first();
-            $perm = $perm->id;
+            $perm = $perm->uuid;
         }
 
         try {
