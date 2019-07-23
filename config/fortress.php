@@ -153,6 +153,8 @@ return [
     | database.
     |
     */
+    'personable' => 'personable',
+
     'personable_column' => 'personable_type',
 
     'personable_foreign' => 'personable_id',
