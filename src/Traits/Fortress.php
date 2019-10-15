@@ -73,7 +73,9 @@ trait Fortress
     {
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
-        return !!$persona ? $persona->detachRole($role) : false;
+        $return = !!$persona ? $persona->detachRole($role) : false;
+        $this->syncRolesAndPerms($personable);
+        return $return;
     }
 
     /**
