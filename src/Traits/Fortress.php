@@ -198,4 +198,13 @@ trait Fortress
         $persona->save();
         return $persona;
     }
+
+    public function syncRolesAndPerms($personable = null)
+    {
+        $roles = $this->getRoles($personable);
+        foreach ($roles as $role) {
+            $this->attachPermissions($role->perms()->get());
+        }
+        return true;
+    }
 }
