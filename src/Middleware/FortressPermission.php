@@ -1,4 +1,6 @@
-<?php namespace NickAguilarH\Fortress\Middleware;
+<?php 
+
+namespace NickAguilarH\Fortress\Middleware;
 
 /**
  * This file is part of Fortress,

@@ -1,4 +1,6 @@
-<?php namespace NickAguilarH\Fortress\Models;
+<?php
+
+namespace NickAguilarH\Fortress\Models;
 
 /**
  * This file is part of Fortress,

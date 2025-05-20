@@ -3,6 +3,8 @@
 namespace NickAguilarH\Fortress;
 
 use Illuminate\Support\ServiceProvider;
+use NickAguilarH\Fortress\Commands\GenerateCommand;
+use NickAguilarH\Fortress\Commands\MigrationCommand;
 
 class FortressServiceProvider extends ServiceProvider
 {
@@ -59,7 +61,7 @@ class FortressServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'command.Fortress.migration'
+            'command.fortress.migration'
         ];
     }
 }

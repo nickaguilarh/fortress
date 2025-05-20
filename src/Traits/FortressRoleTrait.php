@@ -1,4 +1,6 @@
-<?php namespace NickAguilarH\Fortress\Traits;
+<?php 
+
+namespace NickAguilarH\Fortress\Traits;
 
 /**
  * This file is part of Fortress,

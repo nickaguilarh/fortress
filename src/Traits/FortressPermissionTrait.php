@@ -1,4 +1,6 @@
-<?php namespace NickAguilarH\Fortress\Traits;
+<?php 
+
+namespace NickAguilarH\Fortress\Traits;
 
 use Ramsey\Uuid\Uuid;
 
