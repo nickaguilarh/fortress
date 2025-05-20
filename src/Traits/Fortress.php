@@ -6,23 +6,6 @@ namespace NickAguilarH\Fortress\Traits;
 
 trait Fortress
 {
-    public function personae()
-    {
-        /** @var \Illuminate\Database\Eloquent\Model $this */
-        return $this->hasMany(config('fortress.persona'));
-    }
-
-    /**
-     * Get the roles in personable.
-     * @param null $personable
-     * @return mixed
-     */
-    public function getRoles($personable = null)
-    {
-        $persona = self::getPersona($personable);
-        return $persona->roles;
-    }
-
     /**
      * @param $role
      * @param \NickAguilarH\Fortress\Models\Persona $personable
@@ -35,6 +18,46 @@ trait Fortress
         return !!$persona ? $persona->hasRole($role) : false;
     }
 
+    /**
+     * @param null $personable
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\HasMany|mixed|object|null
+     */
+    private function getPersona($personable = null)
+    {
+        /** @var \NickAguilarH\Fortress\Models\Persona $persona */
+        if (!$personable) return $this->personae()->first();
+
+        $class = $personable->personae()->getMorphClass();
+        $id = $personable->getKey();
+
+        $persona = $this->personae()
+            ->where(config('fortress.personable_column'), $class)
+            ->where(config('fortress.personable_foreign'), $id)->first();
+
+        if (!$persona) {
+            $persona = self::createPersona($personable);
+        }
+
+        return $persona;
+    }
+
+    public function personae()
+    {
+        /** @var \Illuminate\Database\Eloquent\Model $this */
+        return $this->hasMany(config('fortress.persona'));
+    }
+
+    private function createPersona($personable)
+    {
+        if (!is_object($personable)) {
+            return false;
+        }
+        $persona = $this->personae()->newModelInstance();
+        $persona->user()->associate($this);
+        $persona->personable()->associate($personable);
+        $persona->save();
+        return $persona;
+    }
 
     /**
      * @param $perm
@@ -78,6 +101,40 @@ trait Fortress
         return $return;
     }
 
+    public function syncRolesAndPerms($personable = null)
+    {
+        $roles = $this->getRoles($personable);
+        foreach ($roles as $role) {
+            $this->attachPermissions($role->perms()->get());
+        }
+        return true;
+    }
+
+    /**
+     * Get the roles in personable.
+     * @param null $personable
+     * @return mixed
+     */
+    public function getRoles($personable = null)
+    {
+        $persona = self::getPersona($personable);
+        return $persona->roles;
+    }
+
+    /**
+     * Attach multiple roles to a user
+     *
+     * @param mixed $roles
+     * @param null $personable
+     * @return mixed
+     */
+    public function attachPermissions($roles, $personable = null)
+    {
+        /** @var \NickAguilarH\Fortress\Models\Persona $persona */
+        $persona = self::getPersona($personable);
+        return !!$persona ? $persona->attachPermissions($roles) : false;
+    }
+
     /**
      * Attach multiple roles to a user
      *
@@ -105,7 +162,6 @@ trait Fortress
         $persona = self::getPersona($personable);
         return !!$persona ? $persona->detachRoles($roles) : false;
     }
-
 
     /**
      * Alias to eloquent many-to-many relation's attach() method.
@@ -135,22 +191,6 @@ trait Fortress
         return !!$persona ? $persona->detachPermission($role) : false;
     }
 
-
-    /**
-     * Attach multiple roles to a user
-     *
-     * @param mixed $roles
-     * @param null $personable
-     * @return mixed
-     */
-    public function attachPermissions($roles, $personable = null)
-    {
-        /** @var \NickAguilarH\Fortress\Models\Persona $persona */
-        $persona = self::getPersona($personable);
-        return !!$persona ? $persona->attachPermissions($roles) : false;
-    }
-
-
     /**
      * Detach multiple roles from a user
      *
@@ -163,50 +203,5 @@ trait Fortress
         /** @var \NickAguilarH\Fortress\Models\Persona $persona */
         $persona = self::getPersona($personable);
         return !!$persona ? $persona->detachPermissions($roles) : false;
-    }
-
-
-    /**
-     * @param null $personable
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\HasMany|mixed|object|null
-     */
-    private function getPersona($personable = null)
-    {
-        /** @var \NickAguilarH\Fortress\Models\Persona $persona */
-        if (!$personable) return $this->personae()->first();
-
-        $class = $personable->personae()->getMorphClass();
-        $id =  $personable->getKey();
-
-        $persona = $this->personae()
-            ->where(config('fortress.personable_column'), $class )
-            ->where(config('fortress.personable_foreign'), $id)->first();
-
-        if (!$persona) {
-            $persona = self::createPersona($personable);
-        }
-
-        return $persona;
-    }
-
-    private function createPersona($personable)
-    {
-        if (!is_object($personable)) {
-            return false;
-        }
-        $persona = $this->personae()->newModelInstance();
-        $persona->user()->associate($this);
-        $persona->personable()->associate($personable);
-        $persona->save();
-        return $persona;
-    }
-
-    public function syncRolesAndPerms($personable = null)
-    {
-        $roles = $this->getRoles($personable);
-        foreach ($roles as $role) {
-            $this->attachPermissions($role->perms()->get());
-        }
-        return true;
     }
 }

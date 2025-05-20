@@ -25,13 +25,11 @@ class FortressServiceProvider extends ServiceProvider
 
     }
 
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
+    public function publishConfig()
     {
+        $this->publishes([
+            __DIR__ . '/../config/fortress.php' => config_path('fortress.php'),
+        ], 'config');
     }
 
     public function registerCommands()
@@ -44,12 +42,14 @@ class FortressServiceProvider extends ServiceProvider
         }
     }
 
-    public function publishConfig(){
-        $this->publishes([
-            __DIR__ . '/../config/fortress.php' => config_path('fortress.php'),
-        ], 'config');
+    /**
+     * Register services.
+     *
+     * @return void
+     */
+    public function register()
+    {
     }
-
 
     /**
      * Get the services provided.

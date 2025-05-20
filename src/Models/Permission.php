@@ -8,22 +8,13 @@
  * @package NickAguilarH\Fortress
  */
 
+use Illuminate\Database\Eloquent\Model;
 use NickAguilarH\Fortress\Contracts\FortressPermissionInterface;
 use NickAguilarH\Fortress\Traits\FortressPermissionTrait;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
 
 class Permission extends Model implements FortressPermissionInterface
 {
     use FortressPermissionTrait;
-
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table;
-
 
     /**
      * The primary key for the model no autoincrement.
@@ -31,7 +22,12 @@ class Permission extends Model implements FortressPermissionInterface
      * @var boolean
      */
     public $incrementing = false;
-
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table;
     /**
      * The primary key for the model.
      *

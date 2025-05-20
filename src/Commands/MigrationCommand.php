@@ -1,6 +1,6 @@
 <?php
 
-namespace NickAguilarH\Fortress;
+namespace NickAguilarH\Fortress\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
@@ -112,7 +112,7 @@ class MigrationCommand extends Command
         $userKeyName = $userModel->getKeyName();
         $userForeignKeyType = config('fortress.user_foreign_key_type');
 
-        $data = compact('rolesTable', 'permissionsTable', 'permissionRoleTable', 'usersTable', 'userKeyName', 'roleForeignKey', 'permissionForeignKey', 'personaTable', 'personaRoleTable', 'personaForeignKey', 'personaPermissionTable', 'userForeignKey','personableColumn','userForeignKeyType','personableColumnForeign','personableColumnForeignType');
+        $data = compact('rolesTable', 'permissionsTable', 'permissionRoleTable', 'usersTable', 'userKeyName', 'roleForeignKey', 'permissionForeignKey', 'personaTable', 'personaRoleTable', 'personaForeignKey', 'personaPermissionTable', 'userForeignKey', 'personableColumn', 'userForeignKeyType', 'personableColumnForeign', 'personableColumnForeignType');
 
         $output = $this->laravel->view->make('fortress::Generators.migration')->with($data)->render();
 

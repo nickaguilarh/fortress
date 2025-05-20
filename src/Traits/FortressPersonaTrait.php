@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Cache;
 use NickAguilarH\Fortress\Models\Role;
-use NickAguilarH\Fortress\Permission;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -39,6 +38,28 @@ trait FortressPersonaTrait
     }
 
     /**
+     * Many-to-Many relations with role model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(config('fortress.role'), config('fortress.persona_role_table'),
+            config('fortress.persona_foreign_key'), config('fortress.role_foreign_key'));
+    }
+
+    /**
+     * Many-to-Many relations with the personae model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function perms()
+    {
+        return $this->belongsToMany(config('fortress.permission'), config('fortress.persona_permission_table'),
+            config('fortress.persona_foreign_key'), config('fortress.permission_foreign_key'));
+    }
+
+    /**
      * MorphTo relations with Role.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
@@ -62,7 +83,7 @@ trait FortressPersonaTrait
      * Checks if the user has a role by its name.
      *
      * @param string|array $name Role name or array of role names.
-     * @param bool $requireAll   All roles in the array are required.
+     * @param bool $requireAll All roles in the array are required.
      *
      * @return bool
      */
@@ -122,21 +143,10 @@ trait FortressPersonaTrait
     }
 
     /**
-     * Many-to-Many relations with role model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function roles()
-    {
-        return $this->belongsToMany(config('fortress.role'), config('fortress.persona_role_table'),
-            config('fortress.persona_foreign_key'), config('fortress.role_foreign_key'));
-    }
-
-    /**
      * Check if user has a permission by its name.
      *
      * @param string|array $permission Permission string or array of permissions.
-     * @param bool $requireAll         All permissions in the array are required.
+     * @param bool $requireAll All permissions in the array are required.
      *
      * @return bool
      */
@@ -196,17 +206,6 @@ trait FortressPersonaTrait
     }
 
     /**
-     * Many-to-Many relations with the personae model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function perms()
-    {
-        return $this->belongsToMany(config('fortress.permission'), config('fortress.persona_permission_table'),
-            config('fortress.persona_foreign_key'), config('fortress.permission_foreign_key'));
-    }
-
-    /**
      * Attach multiple roles to a user
      *
      * @param mixed $roles
@@ -244,6 +243,76 @@ trait FortressPersonaTrait
         try {
             $this->roles()->sync($role, false);
             $this->parsePermsOfRole(config('fortress.role')::find($role));
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
+    }
+
+    /**
+     * Assign default set of permissions of a specified role.
+     *
+     * @param Role $role
+     * @param bool $remove
+     */
+    public final function parsePermsOfRole(Role $role, bool $remove = false): void
+    {
+        $perms = $role->perms;
+        foreach ($perms as $perm) {
+            if ($remove) {
+                $this->detachPermission($perm);
+            } else {
+                $this->attachPermission($perm);
+            }
+        }
+    }
+
+    /**
+     * Alias to eloquent many-to-many relation's detach() method.
+     *
+     * @param mixed $perm
+     *
+     * @return bool
+     */
+    public function detachPermission($perm)
+    {
+        if (is_object($perm)) {
+            $perm = $perm->getKey();
+        } else if (is_array($perm)) {
+            $perm = $perm['uuid'];
+        } else if (is_string($perm)) {
+            $perm = config('fortress.permission')::where('name', '=', $perm)->first();
+            $perm = $perm->uuid;
+        }
+
+        try {
+            $this->perms()->detach($perm);
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
+    }
+
+    /**
+     * Alias to eloquent many-to-many relation's attach() method.
+     *
+     * @param mixed $perm
+     *
+     * @return bool
+     */
+    public function attachPermission($perm)
+    {
+        if (is_object($perm)) {
+            $perm = $perm->getKey();
+        } else if (is_array($perm)) {
+            $perm = $perm['uuid'];
+        } else if (is_string($perm)) {
+            $perm = config('fortress.permission')::where('name', '=', $perm)->first();
+            $perm = $perm->uuid;
+        }
+
+        try {
+            $this->perms()->sync($perm, false);
             return true;
         } catch (\Exception $exception) {
             return false;
@@ -316,32 +385,6 @@ trait FortressPersonaTrait
     }
 
     /**
-     * Alias to eloquent many-to-many relation's attach() method.
-     *
-     * @param mixed $perm
-     *
-     * @return bool
-     */
-    public function attachPermission($perm)
-    {
-        if (is_object($perm)) {
-            $perm = $perm->getKey();
-        } else if (is_array($perm)) {
-            $perm = $perm['uuid'];
-        } else if (is_string($perm)) {
-            $perm = config('fortress.permission')::where('name', '=', $perm)->first();
-            $perm = $perm->uuid;
-        }
-
-        try {
-            $this->perms()->sync($perm, false);
-            return true;
-        } catch (\Exception $exception) {
-            return false;
-        }
-    }
-
-    /**
      * Detach multiple roles from a user
      *
      * @param mixed $perms
@@ -360,32 +403,6 @@ trait FortressPersonaTrait
             }
         }
         return true;
-    }
-
-    /**
-     * Alias to eloquent many-to-many relation's detach() method.
-     *
-     * @param mixed $perm
-     *
-     * @return bool
-     */
-    public function detachPermission($perm)
-    {
-        if (is_object($perm)) {
-            $perm = $perm->getKey();
-        } else if (is_array($perm)) {
-            $perm = $perm['uuid'];
-        } else if (is_string($perm)) {
-            $perm = config('fortress.permission')::where('name', '=', $perm)->first();
-            $perm = $perm->uuid;
-        }
-
-        try {
-            $this->perms()->detach($perm);
-            return true;
-        } catch (\Exception $exception) {
-            return false;
-        }
     }
 
     /**
@@ -414,23 +431,5 @@ trait FortressPersonaTrait
         return $query->whereHas('perms', function ($query) use ($perm) {
             $query->where('name', $perm);
         });
-    }
-
-    /**
-     * Assign default set of permissions of a specified role.
-     *
-     * @param Role $role
-     * @param bool $remove
-     */
-    public final function parsePermsOfRole(Role $role, bool $remove = false): void
-    {
-        $perms = $role->perms;
-        foreach ($perms as $perm) {
-            if ($remove) {
-                $this->detachPermission($perm);
-            } else {
-                $this->attachPermission($perm);
-            }
-        }
     }
 }

@@ -9,30 +9,8 @@ use Ramsey\Uuid\Uuid;
  * @license MIT
  * @package NickAguilarH\Fortress
  */
-
-
 trait FortressPermissionTrait
 {
-    /**
-     * Many-to-Many relations with role model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function roles()
-    {
-        return $this->belongsToMany(config('fortress.role'), config('fortress.permission_role_table'), config('fortress.permission_foreign_key'), config('fortress.role_foreign_key'));
-    }
-
-    /**
-     * Many-to-Many relations with the personae model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function personae()
-    {
-        return $this->belongsToMany(config('fortress.persona'), config('fortress.persona_permission_table'), config('fortress.permission_foreign_key'), config('fortress.persona_foreign_key'));
-    }
-
     /**
      * Boot the permission model
      * Attach event listener to remove the many-to-many records when trying to delete
@@ -55,5 +33,25 @@ trait FortressPermissionTrait
         static::creating(function ($model) {
             $model->uuid = Uuid::uuid4()->toString();
         });
+    }
+
+    /**
+     * Many-to-Many relations with role model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(config('fortress.role'), config('fortress.permission_role_table'), config('fortress.permission_foreign_key'), config('fortress.role_foreign_key'));
+    }
+
+    /**
+     * Many-to-Many relations with the personae model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function personae()
+    {
+        return $this->belongsToMany(config('fortress.persona'), config('fortress.persona_permission_table'), config('fortress.permission_foreign_key'), config('fortress.persona_foreign_key'));
     }
 }

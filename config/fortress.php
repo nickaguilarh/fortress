@@ -141,7 +141,7 @@ return [
     | database.
     |
     */
-    'persona' => \NickAguilarH\Fortress\Models\Persona::class,
+    'persona' => \NickAguilarH\Fortress\Commands\Commands\Models\Persona::class,
 
 
     /*

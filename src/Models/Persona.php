@@ -11,20 +11,17 @@ class Persona extends Model implements FortressPersonaInterface
     use FortressPersonaTrait;
 
     /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table;
-
-
-    /**
      * The primary key for the model no autoincrement.
      *
      * @var boolean
      */
     public $incrementing = false;
-
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table;
     /**
      * The primary key for the model.
      *

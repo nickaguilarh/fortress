@@ -9,13 +9,58 @@
  */
 
 use Illuminate\Cache\TaggableStore;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cache;
 use Ramsey\Uuid\Uuid;
 
 trait FortressRoleTrait
 {
     //Big block of caching functionality.
+    /**
+     * Boot the role model
+     * Attach event listener to remove the many-to-many records when trying to delete
+     * Will NOT delete any records if the role model uses soft deletes.
+     *
+     * @return void|bool
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($role) {
+            if (!method_exists(config('fortress.role'), 'bootSoftDeletes')) {
+                $role->personae()->sync([]);
+                $role->perms()->sync([]);
+            }
+
+            return true;
+        });
+
+        static::creating(function ($model) {
+            $model->uuid = Uuid::uuid4()->toString();
+        });
+    }
+
+    /**
+     * Many-to-Many relations with the personae model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function personae()
+    {
+        return $this->belongsToMany(config('fortress.persona'), config('fortress.persona_role_table'), config('fortress.role_foreign_key'), config('fortress.persona_foreign_key'));
+    }
+
+    /**
+     * Many-to-Many relations with the permission model.
+     * Named "perms" for backwards compatibility. Also because "perms" is short and sweet.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function perms()
+    {
+        return $this->belongsToMany(config('fortress.permission'), config('fortress.permission_role_table'), config('fortress.role_foreign_key'), config('fortress.permission_foreign_key'));
+    }
+
     public function cachedPermissions()
     {
         $rolePrimaryKey = $this->primaryKey;
@@ -61,52 +106,6 @@ trait FortressRoleTrait
     }
 
     /**
-     * Many-to-Many relations with the personae model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function personae()
-    {
-        return $this->belongsToMany(config('fortress.persona'), config('fortress.persona_role_table'), config('fortress.role_foreign_key'), config('fortress.persona_foreign_key'));
-    }
-
-    /**
-     * Many-to-Many relations with the permission model.
-     * Named "perms" for backwards compatibility. Also because "perms" is short and sweet.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function perms()
-    {
-        return $this->belongsToMany(config('fortress.permission'), config('fortress.permission_role_table'), config('fortress.role_foreign_key'), config('fortress.permission_foreign_key'));
-    }
-
-    /**
-     * Boot the role model
-     * Attach event listener to remove the many-to-many records when trying to delete
-     * Will NOT delete any records if the role model uses soft deletes.
-     *
-     * @return void|bool
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        static::deleting(function ($role) {
-            if (!method_exists(config('fortress.role'), 'bootSoftDeletes')) {
-                $role->personae()->sync([]);
-                $role->perms()->sync([]);
-            }
-
-            return true;
-        });
-
-        static::creating(function ($model) {
-            $model->uuid = Uuid::uuid4()->toString();
-        });
-    }
-
-    /**
      * Save the inputted permissions.
      *
      * @param mixed $inputPermissions
@@ -147,6 +146,20 @@ trait FortressRoleTrait
     }
 
     /**
+     * Attach multiple permissions to current role.
+     *
+     * @param mixed $permissions
+     *
+     * @return void
+     */
+    public function attachPermissions($permissions)
+    {
+        foreach ($permissions as $permission) {
+            $this->attachPermission($permission);
+        }
+    }
+
+    /**
      * Detach permission from current role.
      *
      * @param object|array $permission
@@ -164,20 +177,6 @@ trait FortressRoleTrait
         }
 
         $this->perms()->detach($permission);
-    }
-
-    /**
-     * Attach multiple permissions to current role.
-     *
-     * @param mixed $permissions
-     *
-     * @return void
-     */
-    public function attachPermissions($permissions)
-    {
-        foreach ($permissions as $permission) {
-            $this->attachPermission($permission);
-        }
     }
 
     /**

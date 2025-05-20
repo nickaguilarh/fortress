@@ -1,4 +1,6 @@
-<?php namespace NickAguilarH\Fortress\Contracts;
+<?php
+
+namespace NickAguilarH\Fortress\Contracts;
 
 /**
  * This file is part of Fortress,
@@ -7,7 +9,6 @@
  * @license MIT
  * @package NickAguilarH\Fortress
  */
-
 interface FortressPersonaInterface
 {
     /**
@@ -34,8 +35,8 @@ interface FortressPersonaInterface
     /**
      * Checks if the user has a role by its name.
      *
-     * @param string|array $name       Role name or array of role names.
-     * @param bool         $requireAll All roles in the array are required.
+     * @param string|array $name Role name or array of role names.
+     * @param bool $requireAll All roles in the array are required.
      *
      * @return bool
      */
@@ -45,7 +46,7 @@ interface FortressPersonaInterface
      * Check if user has a permission by its name.
      *
      * @param string|array $permission Permission string or array of permissions.
-     * @param bool         $requireAll All permissions in the array are required.
+     * @param bool $requireAll All permissions in the array are required.
      *
      * @return bool
      */

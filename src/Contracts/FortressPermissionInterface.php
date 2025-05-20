@@ -1,4 +1,6 @@
-<?php namespace NickAguilarH\Fortress\Contracts;
+<?php
+
+namespace NickAguilarH\Fortress\Contracts;
 
 /**
  * This file is part of Fortress,
@@ -7,7 +9,6 @@
  * @license MIT
  * @package NickAguilarH\Fortress
  */
-
 interface FortressPermissionInterface
 {
 

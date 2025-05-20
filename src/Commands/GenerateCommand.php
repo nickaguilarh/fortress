@@ -1,6 +1,6 @@
 <?php
 
-namespace NickAguilarH\Fortress;
+namespace NickAguilarH\Fortress\Commands;
 
 use Illuminate\Console\Command;
 use NickAguilarH\Fortress\Models\Role;

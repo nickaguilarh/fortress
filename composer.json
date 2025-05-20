@@ -9,8 +9,9 @@
         }
     ],
     "require": {
-        "php": "^7.1.3 | ^8.1.0",
-        "ramsey/uuid": "^4.2"
+        "php": "*",
+        "laravel/framework": "*",
+        "ramsey/uuid": "*"
     },
     "autoload": {
         "psr-4": {

@@ -8,21 +8,13 @@
  * @package NickAguilarH\Fortress
  */
 
+use Illuminate\Database\Eloquent\Model;
 use NickAguilarH\Fortress\Contracts\FortressRoleInterface;
 use NickAguilarH\Fortress\Traits\FortressRoleTrait;
-use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model implements FortressRoleInterface
 {
     use FortressRoleTrait;
-
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table;
-
 
     /**
      * The primary key for the model no autoincrement.
@@ -30,7 +22,12 @@ class Role extends Model implements FortressRoleInterface
      * @var boolean
      */
     public $incrementing = false;
-
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table;
     /**
      * The primary key for the model.
      *
